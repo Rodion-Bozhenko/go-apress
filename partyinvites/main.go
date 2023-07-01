@@ -39,9 +39,9 @@ func main() {
   loadTemplates()
 
   http.HandleFunc("/", welcomeHandler)
-  http.HandleFunc("list", listHandler)
+  http.HandleFunc("/list", listHandler)
 
-  err := http.ListenAndServe(":5020", nil)
+  err := http.ListenAndServe("localhost:5020", nil)
   if (err != nil) {
     fmt.Println(err)
   }
