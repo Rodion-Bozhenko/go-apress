@@ -72,4 +72,9 @@ func main() {
 	someNumbers := []int{69, 33}
 	copy(someNumbers[1:], allNumbers[2:3])
 	fmt.Println("allNumbers:", allNumbers, "someNumbers:", someNumbers)
+
+	// Delete element
+	sliceForDeletion := []string{"First", "Second", "Third", "Fourth"}
+	deleted := append(sliceForDeletion[:2], sliceForDeletion[3:]...)
+	fmt.Println("Deleted:", deleted)
 }
