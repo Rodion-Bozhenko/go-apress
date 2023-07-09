@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+	"sort"
+	"strconv"
+)
 
 func main() {
 	var names [3]string
@@ -77,4 +82,71 @@ func main() {
 	sliceForDeletion := []string{"First", "Second", "Third", "Fourth"}
 	deleted := append(sliceForDeletion[:2], sliceForDeletion[3:]...)
 	fmt.Println("Deleted:", deleted)
+
+	// Slices comparison
+	equalSlice := allNumbers
+	fmt.Println("Equal:", reflect.DeepEqual(allNumbers, equalSlice))
+
+	// Convert slice to sliceToArray
+	sliceToArray := []string{"First", "Second", "Third"}
+	arrayPtr := (*[3]string)(sliceToArray)
+	array := *arrayPtr
+	fmt.Println("Array from slice:", array)
+
+	// Maps
+	// mapProducts := make(map[string]float64, 10)
+	mapProducts := map[string]float64{
+		"Kayak":      279,
+		"Lifejacket": 48.95,
+		"Hat":        0,
+	}
+	mapProducts["Kayak"] = 279
+	mapProducts["Lifejacket"] = 48.95
+	fmt.Println("Map size:", len(mapProducts))
+	fmt.Println("Price:", mapProducts["Kayak"])
+	fmt.Println("Price:", mapProducts["Hat"])
+
+	// Removing items
+	delete(mapProducts, "Hat")
+
+	if value, ok := mapProducts["Hat"]; ok {
+		fmt.Println("Stored value:", value)
+	} else {
+		fmt.Println("No stored value")
+	}
+
+	// Enumerating maps
+	for key, value := range mapProducts {
+		fmt.Println("Product:", key, "Price:", value)
+	}
+
+	// Sorting maps
+
+	keys := make([]string, 0, len(mapProducts))
+	for key := range mapProducts {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		fmt.Println("Sorted Product:", key, "Sorted Price:", mapProducts[key])
+	}
+
+	// Strings as collections
+	var price2 = []rune("£48.95")
+	var currency string = string(price2[0])
+	var amountString = string(price2[1:])
+	amount, parseErr := strconv.ParseFloat(amountString, 64)
+
+	fmt.Println("Currency:", currency)
+
+	if parseErr == nil {
+		fmt.Println("Amount:", amount)
+	} else {
+		fmt.Println("Parse Error:", parseErr)
+	}
+
+	// Enumerating strings
+	for index, char := range "¢49.95" {
+		fmt.Println("Index:", index, "Char:", char, "String char:", string(char))
+	}
 }
