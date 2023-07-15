@@ -6,6 +6,7 @@ import (
 	. "packages/fmt"
 	"packages/store"
 	"packages/store/cart"
+	// "github.com/fatih/color"
 )
 
 func main() {
@@ -26,4 +27,7 @@ func main() {
 	}
 
 	fmt.Println("Name:", cart.CustomerName, "Total:", ToCurrency(cart.GetTotal()))
+
+	// color.Green("Name: " + cart.CustomerName)
+	// color.Cyan("Total: " + ToCurrency(cart.GetTotal()))
 }
