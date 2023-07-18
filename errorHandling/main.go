@@ -3,6 +3,19 @@ package main
 import "fmt"
 
 func main() {
+	defer func() {
+		if arg := recover(); arg != nil {
+			if err, ok := arg.(error); ok {
+				fmt.Println("Error:", err.Error())
+				panic(err)
+			} else if str, ok := arg.(string); ok {
+				fmt.Println("Message:", str)
+			} else {
+				fmt.Println("Panic recovered")
+			}
+		}
+	}()
+
 	categories := []string{"Watersports", "Chess", "Running"}
 
 	for _, cat := range categories {
@@ -23,7 +36,8 @@ func main() {
 		if message.CategoryError == nil {
 			fmt.Println(message.Category, "Total:", ToCurrency(message.Total))
 		} else {
-			fmt.Println(message.Category, "(no such category)")
+			// fmt.Println(message.Category, "(no such category)")
+			panic(message.CategoryError)
 		}
 	}
 }
