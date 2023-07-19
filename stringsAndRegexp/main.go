@@ -40,4 +40,21 @@ func main() {
 	fmt.Println("IndexAny:", strings.IndexAny(description, "abcd"))
 	fmt.Println("LastIndex:", strings.LastIndex(description, "o"))
 	fmt.Println("LastIndexAny:", strings.LastIndexAny(description, "abcd"))
+
+	isLetterB := func(r rune) bool {
+		return r == 'B' || r == 'b'
+	}
+
+	fmt.Println("IndexFunc:", strings.IndexFunc(description, isLetterB))
+
+	splits := strings.SplitN(description, " ", 3)
+	for _, x := range splits {
+		fmt.Println("Split >>" + x + "<<")
+	}
+
+	splitsAfter := strings.SplitAfterN(description, " ", 3)
+
+	for _, x := range splitsAfter {
+		fmt.Println("SplitAfter >>" + x + "<<")
+	}
 }
