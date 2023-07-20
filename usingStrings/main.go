@@ -24,4 +24,11 @@ func main() {
 	} else {
 		fmt.Println(err.Error())
 	}
+
+	number := 250
+
+	fmt.Printf("Binary: %b", number)
+	fmt.Printf("Decimal: %d", number)
+	fmt.Printf("Octal: %o %O", number, number)
+	fmt.Printf("Hexadecimal: %x, %X", number, number)
 }
