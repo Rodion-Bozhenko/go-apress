@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 	"math/rand"
+	"sort"
 	"time"
 )
 
@@ -41,4 +42,19 @@ func main() {
 	for i, name := range names {
 		Printfln("Index %v: Name: %v", i, name)
 	}
+
+	ints := []int{9, 4, 4, 2, 6, 9, 0}
+	Printfln("Ints: %v", ints)
+	sort.Ints(ints)
+	Printfln("Ints sorted: %v", ints)
+
+	floats := []float64{279, 48.95, 19.50}
+	Printfln("Floats: %v", floats)
+	sort.Float64s(floats)
+	Printfln("Floats sorted: %v", floats)
+
+	strings := []string{"Kayak", "Lifejacket", "Stadium"}
+	Printfln("Strings: %v", strings)
+	sort.Strings(strings)
+	Printfln("Strings sorted: %v", strings)
 }
