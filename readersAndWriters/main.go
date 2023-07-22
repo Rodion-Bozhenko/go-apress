@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"strings"
 )
 
 type Product struct {
@@ -50,10 +49,14 @@ func copyData(reader io.Reader, writer io.Writer) {
 }
 
 func main() {
-	var builder strings.Builder
-	r := strings.NewReader("Kayak")
+	// var builder strings.Builder
+	// r := strings.NewReader("Kayak")
 	// processData(r, &builder)
 	// Printfln("String builder contents: %s", builder.String())
-	copyData(r, &builder)
-	Printfln("String builder contents from copy: %s", builder.String())
+	// copyData(r, &builder)
+	// Printfln("String builder contents from copy: %s", builder.String())
+
+	pipeReader, pipeWriter := io.Pipe()
+	go GenerateData(pipeWriter)
+	ConsumeData(pipeReader)
 }
