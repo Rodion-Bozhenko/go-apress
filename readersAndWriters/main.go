@@ -192,4 +192,36 @@ func main() {
 	encoder.Encode(namedItems)
 
 	fmt.Print(writer.String())
+
+	reader := strings.NewReader(`true "Hello" 99.99 20`)
+
+	vals := []interface{}{}
+
+	decoder := json.NewDecoder(reader)
+
+	for {
+		var decodedVal interface{}
+		err := decoder.Decode(&decodedVal)
+		if err != nil {
+			if err != io.EOF {
+				Printfln("Error: %v", err.Error())
+			}
+			break
+		}
+		vals = append(vals, decodedVal)
+	}
+
+	for _, val := range vals {
+		if num, ok := val.(json.Number); ok {
+			if ival, err := num.Int64(); err == nil {
+				Printfln("Decoded Integer: %v", ival)
+			} else if fpval, err := num.Float64(); err == nil {
+				Printfln("Decoded Floating Point: %v", fpval)
+			} else {
+				Printfln("Decoded String: %v", num.String())
+			}
+		} else {
+			Printfln("Decoded (%T): %v", val, val)
+		}
+	}
 }
