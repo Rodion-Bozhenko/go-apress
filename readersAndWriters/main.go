@@ -17,6 +17,25 @@ type DiscountProduct struct {
 	Discount float64 `json:",string"`
 }
 
+func (dp *DiscountProduct) MarshalJSON() (jsn []byte, err error) {
+	if dp.Product != nil {
+		m := map[string]interface{}{
+			"product": dp.Name,
+			"cost":    dp.Price - dp.Discount,
+		}
+		jsn, err = json.Marshal(m)
+	}
+	return
+}
+
+type Named interface{ GetName() string }
+
+type Person struct{ PersonName string }
+
+func (p *Person) GetName() string { return p.PersonName }
+
+func (p *DiscountProduct) GetName() string { return p.Name }
+
 var Kayak = Product{
 	Name:     "Kayak",
 	Category: "Watersports",
@@ -168,6 +187,9 @@ func main() {
 	encoder.Encode(Kayak)
 	encoder.Encode(dp)
 	encoder.Encode(dp2)
+
+	namedItems := []Named{&dp, &Person{PersonName: "Alice"}}
+	encoder.Encode(namedItems)
 
 	fmt.Print(writer.String())
 }
