@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"io"
+	"strings"
 )
 
 type Product struct {
@@ -56,7 +58,55 @@ func main() {
 	// copyData(r, &builder)
 	// Printfln("String builder contents from copy: %s", builder.String())
 
-	pipeReader, pipeWriter := io.Pipe()
-	go GenerateData(pipeWriter)
-	ConsumeData(pipeReader)
+	// pipeReader, pipeWriter := io.Pipe()
+	// go GenerateData(pipeWriter)
+	// ConsumeData(pipeReader)
+
+	r1 := strings.NewReader("Kayak")
+	r2 := strings.NewReader("Lifejacket")
+	r3 := strings.NewReader("Canoe")
+
+	concatReader := io.MultiReader(r1, r2, r3)
+
+	// var w strings.Builder
+	// teeReader := io.TeeReader(concatReader, &w)
+	//
+	// ConsumeData(teeReader)
+	// Printfln("Echo data: %v", w.String())
+
+	limited := io.LimitReader(concatReader, 5)
+	ConsumeData(limited)
+
+	// var w1 strings.Builder
+	// var w2 strings.Builder
+	// var w3 strings.Builder
+	//
+	// combinedWriter := io.MultiWriter(&w1, &w2, &w3)
+	//
+	// GenerateData(combinedWriter)
+	//
+	// Printfln("Writer #1: %v", w1.String())
+	// Printfln("Writer #2: %v", w1.String())
+	// Printfln("Writer #3: %v", w1.String())
+
+	text := "It was a boat. A small boat."
+
+	var reader io.Reader = NewCustomerReader(strings.NewReader(text))
+	var writer strings.Builder
+	slice := make([]byte, 5)
+
+	buffered := bufio.NewReader(reader)
+
+	for {
+		count, err := buffered.Read(slice)
+		if count > 0 {
+			Printfln("Buffer size: %v, buffered: %v", buffered.Size(), buffered.Buffered())
+			writer.Write(slice[0:count])
+		}
+		if err != nil {
+			break
+		}
+	}
+
+	Printfln("Read data: %v", writer.String())
 }
