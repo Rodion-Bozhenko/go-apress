@@ -1,7 +1,8 @@
 package main
 
 import (
-	"bufio"
+	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 )
@@ -9,6 +10,11 @@ import (
 type Product struct {
 	Name, Category string
 	Price          float64
+}
+
+type DiscountProduct struct {
+	*Product `json:"product,omitempty"`
+	Discount float64 `json:",string"`
 }
 
 var Kayak = Product{
@@ -62,11 +68,11 @@ func main() {
 	// go GenerateData(pipeWriter)
 	// ConsumeData(pipeReader)
 
-	r1 := strings.NewReader("Kayak")
-	r2 := strings.NewReader("Lifejacket")
-	r3 := strings.NewReader("Canoe")
-
-	concatReader := io.MultiReader(r1, r2, r3)
+	// r1 := strings.NewReader("Kayak")
+	// r2 := strings.NewReader("Lifejacket")
+	// r3 := strings.NewReader("Canoe")
+	//
+	// concatReader := io.MultiReader(r1, r2, r3)
 
 	// var w strings.Builder
 	// teeReader := io.TeeReader(concatReader, &w)
@@ -74,8 +80,8 @@ func main() {
 	// ConsumeData(teeReader)
 	// Printfln("Echo data: %v", w.String())
 
-	limited := io.LimitReader(concatReader, 5)
-	ConsumeData(limited)
+	// limited := io.LimitReader(concatReader, 5)
+	// ConsumeData(limited)
 
 	// var w1 strings.Builder
 	// var w2 strings.Builder
@@ -89,7 +95,7 @@ func main() {
 	// Printfln("Writer #2: %v", w1.String())
 	// Printfln("Writer #3: %v", w1.String())
 
-	text := "It was a boat. A small boat."
+	// text := "It was a boat. A small boat."
 
 	// var reader io.Reader = NewCustomerReader(strings.NewReader(text))
 	// var writer strings.Builder
@@ -110,17 +116,58 @@ func main() {
 	//
 	// Printfln("Read data: %v", writer.String())
 
-	var builder strings.Builder
-	var writer = bufio.NewWriterSize(NewCustomerWriter(&builder), 20)
-	for i := 0; true; {
-		end := i + 5
-		if end >= len(text) {
-			writer.Write([]byte(text[i:]))
-			writer.Flush()
-			break
-		}
-		writer.Write([]byte(text[i:end]))
-		i = end
+	// var builder strings.Builder
+	// var writer = bufio.NewWriterSize(NewCustomerWriter(&builder), 20)
+	// for i := 0; true; {
+	// 	end := i + 5
+	// 	if end >= len(text) {
+	// 		writer.Write([]byte(text[i:]))
+	// 		writer.Flush()
+	// 		break
+	// 	}
+	// 	writer.Write([]byte(text[i:end]))
+	// 	i = end
+	// }
+	// Printfln("Written data: %v", builder.String())
+
+	var b bool = true
+	var str string = "Hello"
+	var fval float64 = 69.420
+	var ival int = 200
+	var pointer *int = &ival
+	m := map[string]float64{
+		"Kayak":      279,
+		"Lifejacket": 49.95,
 	}
-	Printfln("Written data: %v", builder.String())
+	dp := DiscountProduct{
+		Product:  &Kayak,
+		Discount: 10.50,
+	}
+	dp2 := DiscountProduct{
+		Discount: 10.3,
+	}
+
+	names := []string{"Kayak", "Lifejacket", "Soccer Ball"}
+	numbers := [3]int{10, 20, 30}
+	var byteArray [5]byte
+	copy(byteArray[0:], []byte(names[0]))
+	byteSlice := []byte(names[0])
+
+	var writer strings.Builder
+	encoder := json.NewEncoder(&writer)
+
+	for _, val := range []interface{}{b, str, fval, ival, pointer} {
+		encoder.Encode(val)
+	}
+
+	encoder.Encode(names)
+	encoder.Encode(numbers)
+	encoder.Encode(byteArray)
+	encoder.Encode(byteSlice)
+	encoder.Encode(m)
+	encoder.Encode(Kayak)
+	encoder.Encode(dp)
+	encoder.Encode(dp2)
+
+	fmt.Print(writer.String())
 }
