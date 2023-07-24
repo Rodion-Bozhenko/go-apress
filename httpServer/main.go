@@ -10,17 +10,16 @@ type StringHandler struct {
 }
 
 func (sh StringHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	if request.URL.Path == "/favicon.ico" {
-		Printfln("Request for icon detected - returning 404")
-		writer.WriteHeader(http.StatusNotFound)
-		return
-	}
 	Printfln("Request for %v", request.URL.Path)
 	io.WriteString(writer, sh.message)
 }
 
 func main() {
-	err := http.ListenAndServe("localhost:5000", StringHandler{"Hello, World"})
+	http.Handle("/message", StringHandler{"Hello World"})
+	http.Handle("/favicon.ico", http.NotFoundHandler())
+	http.Handle("/", http.RedirectHandler("/message", http.StatusTemporaryRedirect))
+
+	err := http.ListenAndServe("localhost:5000", nil)
 	if err != nil {
 		Printfln("Error: %v", err.Error())
 	}
