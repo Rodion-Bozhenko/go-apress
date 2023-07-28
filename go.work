@@ -5,15 +5,22 @@ use (
 	./collections
 	./composition
 	./concurrency
+	./datesAndTimes
 	./errorHandling
+	./files
 	./flowcontrol
 	./functionTypes
 	./functions
+	./html
+	./httpServer
+	./mathAndSorting
 	./methodsAndInterfaces
 	./operations
 	./packages
 	./partyinvites
+	./readersAndWriters
 	./stringsAndRegexp
 	./structs
 	./tools
+	./usingStrings
 )
