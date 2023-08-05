@@ -55,18 +55,61 @@ func main() {
 	// } else {
 	// 	Printfln("Error: %v, Status Code: %v", err.Error(), response.StatusCode)
 	// }
+	// var builder strings.Builder
+	// err := json.NewEncoder(&builder).Encode(Products[0])
+	//
+	// if err == nil {
+	// 	response, err := http.Post("http://localhost:5000/echo", "application/json", strings.NewReader(builder.String()))
+	// 	if err == nil && response.StatusCode == http.StatusOK {
+	// 		io.Copy(os.Stdout, response.Body)
+	// 		defer response.Body.Close()
+	// 	} else {
+	// 		Printfln("Error: %v", err.Error())
+	// 	}
+	// } else {
+	// 	Printfln("ErrorL %v", err.Error())
+	// }
+
+	// var builder strings.Builder
+	// err := json.NewEncoder(&builder).Encode(Products[0])
+	// if err == nil {
+	// 	reqUrl, err := url.Parse("http://localhost:5000/echo")
+	// 	if err == nil {
+	// 		req := http.Request{
+	// 			Method: http.MethodPost,
+	// 			URL:    reqUrl,
+	// 			Header: map[string][]string{
+	// 				"Content-Type": {"application/json"},
+	// 			},
+	// 			Body: io.NopCloser(strings.NewReader(builder.String())),
+	// 		}
+	// 		response, err := http.DefaultClient.Do(&req)
+	// 		if err == nil && response.StatusCode == http.StatusOK {
+	// 			io.Copy(os.Stdout, response.Body)
+	// 			defer response.Body.Close()
+	// 		} else {
+	// 			Printfln("Request Error: %v", err.Error())
+	// 		}
+	// 	} else {
+	// 		Printfln("Parse Error: %v", err.Error())
+	// 	}
+	// } else {
+	// 	Printfln("Encoder Error: %v", err.Error())
+	// }
+
 	var builder strings.Builder
 	err := json.NewEncoder(&builder).Encode(Products[0])
-
+	req, err := http.NewRequest(http.MethodPost, "http://localhost:5000/echo", io.NopCloser(strings.NewReader(builder.String())))
 	if err == nil {
-		response, err := http.Post("http://localhost:5000/echo", "application/json", strings.NewReader(builder.String()))
+		req.Header["Content-Type"] = []string{"application/json"}
+		response, err := http.DefaultClient.Do(req)
 		if err == nil && response.StatusCode == http.StatusOK {
 			io.Copy(os.Stdout, response.Body)
 			defer response.Body.Close()
 		} else {
-			Printfln("Error: %v", err.Error())
+			Printfln("Request Error: %v", err.Error())
 		}
 	} else {
-		Printfln("ErrorL %v", err.Error())
+		Printfln("Request Init Error: %v", err.Error())
 	}
 }

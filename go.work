@@ -12,6 +12,7 @@ use (
 	./functionTypes
 	./functions
 	./html
+	./httpClient
 	./httpServer
 	./mathAndSorting
 	./methodsAndInterfaces
