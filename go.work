@@ -21,6 +21,7 @@ use (
 	./packages
 	./partyinvites
 	./readersAndWriters
+	./reflection
 	./stringsAndRegexp
 	./structs
 	./tools
