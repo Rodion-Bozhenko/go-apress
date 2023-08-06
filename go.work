@@ -5,6 +5,7 @@ use (
 	./collections
 	./composition
 	./concurrency
+	./data
 	./datesAndTimes
 	./errorHandling
 	./files
