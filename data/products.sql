@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS Products (
   Id INTEGER NOT NULL PRIMARY KEY,
   Name TEXT,
   Category INTEGER,
-  Price decimal(8,2),
+  Price decimal(8, 2),
   CONSTRAINT CatRef FOREIGN KEY (Category) REFERENCES Categories(Id)
 );
 
