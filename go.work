@@ -25,6 +25,7 @@ use (
 	./reflection
 	./stringsAndRegexp
 	./structs
+	./tests
 	./tools
 	./usingStrings
 )
