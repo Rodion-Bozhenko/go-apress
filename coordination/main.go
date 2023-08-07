@@ -12,6 +12,7 @@ var mutex = sync.Mutex{}
 var rwmutex = sync.RWMutex{}
 var squares = map[int]int{}
 var readyCond = sync.NewCond(rwmutex.RLocker())
+var once = sync.Once{}
 
 func doSum(count int, val *int) {
 	time.Sleep(time.Second)
@@ -44,28 +45,31 @@ func calculateSquares(max, iterations int) {
 }
 
 func generateSquares(max int) {
-	rwmutex.Lock()
+	// rwmutex.Lock()
 	Printfln("Generating data...")
 	for val := 0; val < max; val++ {
 		squares[val] = int(math.Pow(float64(val), 2))
 	}
-	rwmutex.Unlock()
-	Printfln("Broadcasting condition")
-	readyCond.Broadcast()
-	waitGroup.Done()
+	// rwmutex.Unlock()
+	// Printfln("Broadcasting condition")
+	// readyCond.Broadcast()
+	// waitGroup.Done()
 }
 
 func readSquares(id, max, iterations int) {
-	readyCond.L.Lock()
-	for len(squares) == 0 {
-		readyCond.Wait()
-	}
+	once.Do(func() {
+		generateSquares(max)
+	})
+	// readyCond.L.Lock()
+	// for len(squares) == 0 {
+	// 	readyCond.Wait()
+	// }
 	for i := 0; i < iterations; i++ {
 		key := rand.Intn(max)
 		Printfln("#%v Read Value: %v = %v", id, key, squares[key])
 		time.Sleep(time.Millisecond * 100)
 	}
-	readyCond.L.Unlock()
+	// readyCond.L.Unlock()
 	waitGroup.Done()
 }
 
@@ -80,8 +84,8 @@ func main() {
 		// go calculateSquares(10, 5)
 		go readSquares(i, 10, 5)
 	}
-	waitGroup.Add(1)
-	go generateSquares(10)
+	// waitGroup.Add(1)
+	// go generateSquares(10)
 	waitGroup.Wait()
 	// Printfln("Total: %v", counter)
 	Printfln("Cached values: %v", len(squares))
