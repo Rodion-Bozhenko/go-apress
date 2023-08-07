@@ -1,10 +1,16 @@
 package main
 
 import (
+	"context"
 	"math"
 	"math/rand"
 	"sync"
 	"time"
+)
+
+const (
+	countKey = iota
+	sleepPeriodKey
 )
 
 var waitGroup = sync.WaitGroup{}
@@ -73,20 +79,58 @@ func readSquares(id, max, iterations int) {
 	waitGroup.Done()
 }
 
+func processRequest(ctx context.Context, wg *sync.WaitGroup) {
+	total := 0
+	count := ctx.Value(countKey).(int)
+	sleepPeriod := ctx.Value(sleepPeriodKey).(time.Duration)
+	for i := 0; i < count; i++ {
+		select {
+		case <-ctx.Done():
+			if ctx.Err() == context.Canceled {
+				Printfln("Stopping processing - request cancelled")
+			} else {
+				Printfln("Stopping processing - deadline reached")
+			}
+			goto end
+		default:
+			Printfln("Processing request: %v", total)
+			total++
+			time.Sleep(sleepPeriod)
+		}
+	}
+	Printfln("Request processed...%v", total)
+end:
+	wg.Done()
+}
+
 func main() {
 	// counter := 0
-	rand.Seed(time.Now().UnixNano())
+	// rand.Seed(time.Now().UnixNano())
 
-	numRoutines := 2
-	waitGroup.Add(numRoutines)
-	for i := 0; i < numRoutines; i++ {
-		// go doSum(5000, &counter)
-		// go calculateSquares(10, 5)
-		go readSquares(i, 10, 5)
-	}
+	// numRoutines := 2
+	// waitGroup.Add(numRoutines)
+	// for i := 0; i < numRoutines; i++ {
+	// go doSum(5000, &counter)
+	// go calculateSquares(10, 5)
+	// 	go readSquares(i, 10, 5)
+	// }
 	// waitGroup.Add(1)
 	// go generateSquares(10)
-	waitGroup.Wait()
+	// waitGroup.Wait()
 	// Printfln("Total: %v", counter)
-	Printfln("Cached values: %v", len(squares))
+	// Printfln("Cached values: %v", len(squares))
+
+	waitGroup := sync.WaitGroup{}
+	waitGroup.Add(1)
+	Printfln("Request dispatched...")
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*2)
+	ctx = context.WithValue(ctx, countKey, 4)
+	ctx = context.WithValue(ctx, sleepPeriodKey, time.Millisecond*250)
+	go processRequest(ctx, &waitGroup)
+
+	// time.Sleep(time.Second)
+	// Printfln("Cancelling request")
+	// cancel()
+
+	waitGroup.Wait()
 }
