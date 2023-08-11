@@ -21,6 +21,7 @@ use (
 	./operations
 	./packages
 	./partyinvites
+	./platform
 	./readersAndWriters
 	./reflection
 	./stringsAndRegexp
