@@ -31,4 +31,13 @@ func main() {
 
 	// writeMessage(logger, cfg)
 	services.Call(writeMessage)
+
+	val := struct {
+		message string
+		logging.Logger
+	}{
+		message: "Hello from the struct",
+	}
+	services.Populate(&val)
+	val.Logger.Debug(val.message)
 }
